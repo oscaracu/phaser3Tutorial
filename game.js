@@ -5,7 +5,7 @@ var gameSettings = {
 var config = {
     type: Phaser.AUTO,
     width: 360,
-    height: 600,
+    height: 640,
     physics: {
         default: 'arcade',
         arcade: {
