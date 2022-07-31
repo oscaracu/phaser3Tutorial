@@ -13,40 +13,31 @@ class Play extends Phaser.Scene {
     create() {
         this.background = this.add.tileSprite(0, 0, config.width, config.height, "background").setScale(1);
         this.background.setOrigin(0);
-        this.player0 = this.physics.add.sprite(config.width / 2, 580, "player", 4).setScale(2.5);
-        this.player0.setCollideWorldBounds(true);
-        this.cursorKeys = this.input.keyboard.createCursorKeys();
 
         this.anims.create({
-            key: 'left',
-            frames: this.anims.generateFrameNumbers('player', { frames: [0, 1] }),
+            key: 'default',
+            frames: this.anims.generateFrameNumbers('player', { frames: [5, 4, 3] }),
             frameRate: 20,
-            repeat: -1
+            repeat: 0
         });
 
         this.anims.create({
-            key: 'turn',
-            frames: [{ key: 'player', frame: 4 }],
+            key: 'left',
+            frames: this.anims.generateFrameNumbers('player', { frames: [1, 2, 0] }),
             frameRate: 20,
+            repeat: 0
         });
 
         this.anims.create({
             key: 'right',
-            frames: this.anims.generateFrameNumbers('player', { frames: [5, 6] }),
+            frames: this.anims.generateFrameNumbers('player', { frames: [6, 7, 8] }),
             frameRate: 20,
-            repeat: -1
+            repeat: 0
         });
 
-        this.anims.create({
-            key: 'up',
-            frames: this.anims.generateFrameNumbers('player', { frames: [2, 3] }),
-            frameRate: 20,
-            repeat: -1
-        });
-
-
-
-
+        this.player0 = this.physics.add.sprite(config.width / 2, 580, "player", 5).setScale(2.5);
+        this.player0.setCollideWorldBounds(true);
+        this.cursorKeys = this.input.keyboard.createCursorKeys();
 
 
     }
@@ -54,43 +45,31 @@ class Play extends Phaser.Scene {
     update() {
 
         this.background.tilePositionY -= 1;
-        this.movePlayerManager();
-
-    }
-
-    movePlayerManager() {
-
 
         if (this.cursorKeys.left.isDown) {
-
-            this.player0.setVelocityX(-gameSettings.playerSpeed);
-            this.player0.anims.play('left', true);
-
+    
+            this.player0.anims.play('left', true).setVelocityX(-gameSettings.playerSpeed);
+            
         } else if (this.cursorKeys.right.isDown) {
-
-            this.player0.setVelocityX(gameSettings.playerSpeed);
-            this.player0.anims.play('right', true);
-
-        } else if (this.cursorKeys.up.isDown) {
-
+    
+            this.player0.anims.play('right', true).setVelocityX(gameSettings.playerSpeed);
+    
+        } else {this.player0.anims.play('default', true).setVelocity(0);}
+    
+        if (this.cursorKeys.up.isDown) {
+    
             this.player0.setVelocityY(-gameSettings.playerSpeed);
-            this.player0.anims.play('up', true);
-
+    
         } else if (this.cursorKeys.down.isDown) {
-
+    
             this.player0.setVelocityY(gameSettings.playerSpeed);
-            this.player0.anims.play('turn', true);
-
-        } else {
-
-            this.player0.setVelocityX(0);
-            this.player0.setVelocityY(0);
-            this.player0.anims.play('turn', true);
-
+    
         }
-
-
     }
+
+
+
+    
 
 
 }
