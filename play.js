@@ -16,10 +16,18 @@ class Play extends Phaser.Scene {
 
         this.anims.create({
             key: 'default',
-            frames: this.anims.generateFrameNumbers('player', { frames: [5, 4, 3] }),
+            frames: this.anims.generateFrameNumbers('player', { frames: [5] }),
             frameRate: 20,
             repeat: 0
         });
+
+        this.anims.create({
+            key: 'forward',
+            frames: this.anims.generateFrameNumbers('player', { frames: [3, 4, 5] }),
+            frameRate: 20,
+            repeat: 0
+        });
+
 
         this.anims.create({
             key: 'left',
@@ -44,27 +52,30 @@ class Play extends Phaser.Scene {
 
     update() {
 
+        this.player0.setVelocity(0);
+
         this.background.tilePositionY -= 1;
 
         if (this.cursorKeys.left.isDown) {
-    
-            this.player0.anims.play('left', true).setVelocityX(-gameSettings.playerSpeed);
+            
+            this.player0.anims.play('left', true).setAccelerationX(-2000).setVelocityX(-gameSettings.playerSpeed);
             
         } else if (this.cursorKeys.right.isDown) {
     
-            this.player0.anims.play('right', true).setVelocityX(gameSettings.playerSpeed);
+            this.player0.anims.play('right', true).setAccelerationX(2000).setVelocityX(gameSettings.playerSpeed);
     
-        } else {this.player0.anims.play('default', true).setVelocity(0);}
+        } 
     
         if (this.cursorKeys.up.isDown) {
     
-            this.player0.setVelocityY(-gameSettings.playerSpeed);
+            this.player0.anims.play('forward', true).setAccelerationY(-5000).setVelocityY(-gameSettings.playerSpeed);
+            this.background.tilePositionY -= 2;
     
         } else if (this.cursorKeys.down.isDown) {
     
-            this.player0.setVelocityY(gameSettings.playerSpeed);
+            this.player0.anims.play('default', true).setAcceleration(0, 2500).setVelocityY(gameSettings.playerSpeed);
     
-        }
+        } 
     }
 
 
