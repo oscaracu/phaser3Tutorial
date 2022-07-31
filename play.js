@@ -5,8 +5,7 @@ class Play extends Phaser.Scene {
 
     preload() {
         this.load.image("background", "Space_BG.png");
-        this.load.spritesheet("player", "Player/Player_ship.png", { frameWidth: 16 });
-        this.load.spritesheet("boosters", "Player/Boosters.png", { frameWidth: 16 });
+        this.load.spritesheet("player", "Player/playerShip.png", { frameWidth: 16, frameHeight: 23 });
         this.load.image("beam", "Projectiles/Player_beam.png");
         this.load.image("alan", "Enemies/Alan.png");
     }
@@ -14,37 +13,38 @@ class Play extends Phaser.Scene {
     create() {
         this.background = this.add.tileSprite(0, 0, config.width, config.height, "background").setScale(1);
         this.background.setOrigin(0);
-        this.boost = this.physics.add.sprite(config.width/2, 557, 'boosters').setScale(2.5).setVisible(false);
-        this.player0 = this.physics.add.sprite(config.width / 2, 520, "player", 1).setScale(2.5);
+        this.player0 = this.physics.add.sprite(config.width / 2, 580, "player", 4).setScale(2.5);
         this.player0.setCollideWorldBounds(true);
         this.cursorKeys = this.input.keyboard.createCursorKeys();
 
         this.anims.create({
             key: 'left',
-            frames: [{ key: 'player', frame: 0 }],
+            frames: this.anims.generateFrameNumbers('player', { frames: [0, 1] }),
             frameRate: 20,
+            repeat: -1
         });
 
         this.anims.create({
             key: 'turn',
-            frames: [{ key: 'player', frame: 1 }],
+            frames: [{ key: 'player', frame: 4 }],
             frameRate: 20,
         });
 
         this.anims.create({
             key: 'right',
-            frames: [{ key: 'player', frame: 2 }],
-            frameRate: 20
+            frames: this.anims.generateFrameNumbers('player', { frames: [5, 6] }),
+            frameRate: 20,
+            repeat: -1
         });
 
         this.anims.create({
-            key: 'boostAnim',
-            frames: ('boosters'),
-            frameRate: 10,
-            repeat: -1,
+            key: 'up',
+            frames: this.anims.generateFrameNumbers('player', { frames: [2, 3] }),
+            frameRate: 20,
+            repeat: -1
         });
 
-        this.boost.play('boostAnim');
+
 
 
 
@@ -52,57 +52,43 @@ class Play extends Phaser.Scene {
     }
 
     update() {
+
         this.background.tilePositionY -= 1;
         this.movePlayerManager();
-
-        if (this.boost.y > config.height) {
-            this.boost.y = this.player0.y+38;
-        };
-
-        if (this.boost.y < 58) {
-            this.boost.y = this.player0.y+38;
-        }
-
-        if (this.boost.x < 20) {
-            this.boost.x = this.player0.x;
-        }
-
-        if (this.boost.x > config.width-20) {
-            this.boost.x = this.player0.x;
-        }
 
     }
 
     movePlayerManager() {
 
-        if (this.cursorKeys.left.isDown) {
-            this.player0.setVelocityX(-gameSettings.playerSpeed);
-            this.boost.setVelocityX(-gameSettings.playerSpeed);
-            this.player0.anims.play('left', true);
-        } else if (this.cursorKeys.right.isDown) {
-            this.player0.setVelocityX(gameSettings.playerSpeed);
-            this.boost.setVelocityX(gameSettings.playerSpeed);
-            this.player0.anims.play('right', true);
-        } else { 
-            this.player0.setVelocityX(0); 
-            this.player0.anims.play('turn', true);
-            this.boost.setVelocityX(0);
-        }
 
-        if (this.cursorKeys.up.isDown) {
-            this.boost.setVisible(true);
+        if (this.cursorKeys.left.isDown) {
+
+            this.player0.setVelocityX(-gameSettings.playerSpeed);
+            this.player0.anims.play('left', true);
+
+        } else if (this.cursorKeys.right.isDown) {
+
+            this.player0.setVelocityX(gameSettings.playerSpeed);
+            this.player0.anims.play('right', true);
+
+        } else if (this.cursorKeys.up.isDown) {
+
             this.player0.setVelocityY(-gameSettings.playerSpeed);
-            this.boost.setVelocityY(-gameSettings.playerSpeed);
+            this.player0.anims.play('up', true);
 
         } else if (this.cursorKeys.down.isDown) {
-            this.boost.setVisible(false);
+
             this.player0.setVelocityY(gameSettings.playerSpeed);
-            this.boost.setVelocityY(gameSettings.playerSpeed);
-        } else { 
-            this.boost.setVisible(false);
+            this.player0.anims.play('turn', true);
+
+        } else {
+
+            this.player0.setVelocityX(0);
             this.player0.setVelocityY(0);
-            this.boost.setVelocityY(0);
-         }
+            this.player0.anims.play('turn', true);
+
+        }
+
 
     }
 
