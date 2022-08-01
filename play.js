@@ -3,16 +3,20 @@ class Play extends Phaser.Scene {
         super('playGame');
     }
 
+    
+    shootBeam() {
+        var beam = new Beam(this);
+        beam.scale = 2.5;
+    }
+
     preload() {
-        this.load.image("background", "Space_BG.png");
+        this.load.spritesheet("background", "Space_BG.png", { frameWidth: 64, frameHeight: 64 });
         this.load.spritesheet("player", "Player/playerShip.png", { frameWidth: 16, frameHeight: 23 });
         this.load.image("beam", "Projectiles/Player_beam.png");
         this.load.image("alan", "Enemies/Alan.png");
     }
 
     create() {
-        this.background = this.add.tileSprite(0, 0, config.width, config.height, "background").setScale(1);
-        this.background.setOrigin(0);
 
         this.anims.create({
             key: 'default',
@@ -43,9 +47,24 @@ class Play extends Phaser.Scene {
             repeat: 0
         });
 
+        this.anims.create({
+            key: 'bg',
+            frames: this.anims.generateFrameNumbers('background'),
+            frameRate: 2,
+            repeat: -1,
+            yoyo: true
+        });
+
+        this.bgSprite = this.add.sprite(0, 0, "background").setVisible(false).play('bg');
+        this.background = this.add.tileSprite(0, 0, config.width, config.height, "background");
+        this.background.setOrigin(0);
+        this.background.setTilePosition(32, 32);
+        this.background.setAlpha(0.30);
         this.player0 = this.physics.add.sprite(config.width / 2, 580, "player", 5).setScale(2.5);
         this.player0.setCollideWorldBounds(true);
         this.cursorKeys = this.input.keyboard.createCursorKeys();
+        this.spacebar = this.input.keyboard.addKey(Phaser.Input.Keyboard.KeyCodes.SPACE);
+        this.projectiles = this.add.group();
 
 
     }
@@ -54,7 +73,13 @@ class Play extends Phaser.Scene {
 
         this.player0.setVelocity(0);
 
+        this.background.setFrame(this.bgSprite.frame.name);
+
         this.background.tilePositionY -= 1;
+
+        if (Phaser.Input.Keyboard.JustDown(this.spacebar)) {
+            this.shootBeam();
+        }
 
         if (this.cursorKeys.left.isDown) {
             
@@ -73,9 +98,17 @@ class Play extends Phaser.Scene {
     
         } else if (this.cursorKeys.down.isDown) {
     
-            this.player0.anims.play('default', true).setAcceleration(0, 2500).setVelocityY(gameSettings.playerSpeed);
+            this.player0.anims.play('default', true).setAcceleration(0, 2500).setVelocityY(gameSettings.playerSpeed/4);
     
-        } 
+        }
+        
+        for (var i = 0; i < this.projectiles.getChildren().length; i++) {
+
+            var beam = this.projectiles.getChildren()[i];
+            beam.update();
+
+        }
+
     }
 
 
