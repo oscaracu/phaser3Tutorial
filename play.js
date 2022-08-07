@@ -43,17 +43,17 @@ class Play extends Phaser.Scene {
 
     playerHurt() {
 
-        this.livesUI.destroy();
-        
         this.playerLives--;
-
-        console.log(this.playerLives);
 
         this.playerActive = false;
 
         this.player0.play('explode');
 
         this.player0.body.checkCollision.none = true;
+
+        let liveOut = Phaser.Utils.Array.RemoveAt(this.livesIcons, this.livesUI.getLength()-1);
+
+        if (liveOut) { liveOut.destroy() }
 
         
         this.time.addEvent({
