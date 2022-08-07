@@ -28,7 +28,7 @@ class Play extends Phaser.Scene {
     }
 
     enemyMoves(enemy) {
-        enemy.y += Phaser.Math.Between(1, 3);
+        enemy.y += Phaser.Math.Between(this.enemyMinSpeed, this.enemyMaxSpeed);
         if (enemy.y > config.height) {
             this.enemyReset(enemy);
         }
@@ -43,15 +43,24 @@ class Play extends Phaser.Scene {
 
     playerHurt() {
 
+        this.livesUI.destroy();
+        
+        this.playerLives--;
+
+        console.log(this.playerLives);
+
         this.playerActive = false;
 
         this.player0.play('explode');
 
         this.player0.body.checkCollision.none = true;
 
+        
         this.time.addEvent({
-            delay: 2500,
+            delay: 3000,
             callback: () => {
+
+                if (this.playerLives === 0) { this.scene.start('GameOver'); }
 
                 this.player0.setAcceleration(0);
                 this.player0.setCollideWorldBounds(false);
@@ -68,6 +77,31 @@ class Play extends Phaser.Scene {
 
     }
 
+    enemyDies(projectile, enemy){
+
+        projectile.destroy();
+        this.score += 100;
+        this.player1Score.text = this.score;
+
+        let enemyAnim = enemy.anims.getName();
+        enemy.play('explode');
+        enemy.body.checkCollision.none = true;
+        
+        this.time.addEvent({
+            delay:1000,
+            callback: () => {
+
+                this.enemyReset(enemy);
+                enemy.play(enemyAnim);
+                enemy.body.checkCollision.none = false;
+
+            }
+        });
+        
+
+ 
+    };
+
     preload() {
         this.load.spritesheet("background", "Space_BG.png", { frameWidth: 64, frameHeight: 64 });
         this.load.spritesheet("player", "Player/playerShip.png", { frameWidth: 16, frameHeight: 23 });
@@ -76,6 +110,7 @@ class Play extends Phaser.Scene {
         this.load.spritesheet("bonbon", "Enemies/Bon_Bon.png", { frameWidth: 16, frameHeight: 16 });
         this.load.spritesheet("lips", "Enemies/Lips.png", { frameWidth: 16, frameHeight: 16 });
         this.load.spritesheet("explosion", "Effects/Explosion.png", { frameWidth: 16, frameHeight: 16 });
+        this.load.image("lives", "UIobjects/Player_life_icon.png");
     }
 
     create() {
@@ -149,6 +184,10 @@ class Play extends Phaser.Scene {
             yoyo: true
         });
 
+        this.enemyMinSpeed = 1;
+        this.enemyMaxSpeed = 3;
+        this.score = 0;
+        this.playerLives = 3;
         this.startPos = config.height - 100;
         this.alanStartPos = Phaser.Math.Between(20, config.width - 20);
         this.bonbonStartPos = Phaser.Math.Between(20, config.width - 20);
@@ -173,7 +212,13 @@ class Play extends Phaser.Scene {
         this.enemies.add(this.bonbon0);
         this.enemies.add(this.lips0);
 
+        this.add.text(10, 10, 'PLAYER 1', { fontFamily: '"Press Start 2P"', fontSize: 12, color: 'red' });
+        this.player1Score = this.add.text(10, 26, '0', { fontFamily: '"Press Start 2P"', fontSize: 12 });
+        this.livesUI = this.add.group({ key: 'lives', frame: 0, repeat: this.playerLives-1, setXY: { x: 15, y: 55, stepX: 25 } }).scaleXY(1);
+        this.livesIcons = this.livesUI.getChildren();
+
         this.physics.add.overlap(this.player0, this.enemies, this.playerHurt, null, this);
+        this.physics.add.overlap(this.projectiles, this.enemies, this.enemyDies, null, this);
 
     }
 
@@ -192,7 +237,12 @@ class Play extends Phaser.Scene {
         this.enemyMoves(this.lips0, 1);
 
         if (Phaser.Input.Keyboard.JustDown(this.spacebar)) {
-            this.shootBeam();
+
+            if (this.playerActive === true ) {
+
+                this.shootBeam();
+
+            }
         }
 
         if (this.cursorKeys.left.isDown) {
