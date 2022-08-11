@@ -78,7 +78,6 @@ class Play extends Phaser.Scene {
                 this.player0.y = 700;
                 this.player0.x = config.width / 2;
                 this.player0.play('default');
-                this.enemies.incY(-640);
 
                 this.playerStart();
 
