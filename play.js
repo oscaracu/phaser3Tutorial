@@ -25,6 +25,7 @@ class Play extends Phaser.Scene {
     shootBeam() {
         var beam = new Beam(this);
         beam.scale = 2.5;
+        this.laserSound.play();
     }
 
     enemyMoves(enemy) {
@@ -48,6 +49,7 @@ class Play extends Phaser.Scene {
         this.playerActive = false;
 
         this.player0.play('explode');
+        this.explosionSound.play({volume: 3});
 
         this.player0.body.checkCollision.none = true;
 
@@ -55,12 +57,20 @@ class Play extends Phaser.Scene {
 
         if (liveOut) { liveOut.destroy() }
 
+        if (this.playerLives === 0) {
+            this.musicFadeOut();
+            this.player0.body.checkCollision.none = true;
+        }
+        
         
         this.time.addEvent({
             delay: 3000,
             callback: () => {
-
-                if (this.playerLives === 0) { this.scene.start('GameOver'); }
+                
+                if (this.playerLives === 0) {
+                    this.scene.launch('gameOver');
+                    return;
+                 }
 
                 this.player0.setAcceleration(0);
                 this.player0.setCollideWorldBounds(false);
@@ -68,12 +78,23 @@ class Play extends Phaser.Scene {
                 this.player0.y = 700;
                 this.player0.x = config.width / 2;
                 this.player0.play('default');
+                this.enemies.incY(-640);
 
                 this.playerStart();
 
             }
         });
 
+
+    }
+
+    musicFadeOut() {
+        this.tweens.add({
+            targets: this.bgMusic,
+            volume: 0,
+            ease: 'Linear',
+            duration: 3000,
+        }); 
 
     }
 
@@ -85,6 +106,7 @@ class Play extends Phaser.Scene {
 
         let enemyAnim = enemy.anims.getName();
         enemy.play('explode');
+        this.explosionSound.play({volume: 2});
         enemy.body.checkCollision.none = true;
         
         this.time.addEvent({
@@ -111,6 +133,10 @@ class Play extends Phaser.Scene {
         this.load.spritesheet("lips", "Enemies/Lips.png", { frameWidth: 16, frameHeight: 16 });
         this.load.spritesheet("explosion", "Effects/Explosion.png", { frameWidth: 16, frameHeight: 16 });
         this.load.image("lives", "UIobjects/Player_life_icon.png");
+        this.load.audio("bgMusic", "Race_to_Mars.mp3");
+        this.load.audio("laserFX", "LASRGun_Classic Blaster A Fire_03.wav");
+        this.load.audio("explosionFX", "EXPLDsgn_Explosion Impact_14.wav");
+        this.load.image("bg3", "Space_Background_4.png");
     }
 
     create() {
@@ -194,6 +220,24 @@ class Play extends Phaser.Scene {
         this.lipsStartPos = Phaser.Math.Between(20, config.width - 20);
         this.playerActive = true;
 
+        this.bgMusic = this.sound.add('bgMusic');
+
+        var bgMusicConfig = {
+            mute: false,
+            volume: 1,
+            rate: 1,
+            detune: 0,
+            seek: 0,
+            loop: true,
+            delay: 0
+        };
+
+        this.bgMusic.play(bgMusicConfig);
+        this.laserSound = this.sound.add("laserFX");
+        this.explosionSound = this.sound.add("explosionFX");
+
+        this.bg3 = this.add.tileSprite(180, 0, config.width, 1280, "bg3");
+        this.bg3.setAlpha(0.60);
         this.bgSprite = this.add.sprite(0, 0, "background").setVisible(false).play('bg');
         this.background = this.add.tileSprite(0, 0, config.width, config.height, "background");
         this.background.setOrigin(0);
@@ -231,10 +275,11 @@ class Play extends Phaser.Scene {
         this.background.setFrame(this.bgSprite.frame.name);
 
         this.background.tilePositionY -= 1;
+        this.bg3.tilePositionY -= 1;
 
-        this.enemyMoves(this.alan0, 1);
-        this.enemyMoves(this.bonbon0, 1);
-        this.enemyMoves(this.lips0, 1);
+        this.enemyMoves(this.alan0);
+        this.enemyMoves(this.bonbon0);
+        this.enemyMoves(this.lips0);
 
         if (Phaser.Input.Keyboard.JustDown(this.spacebar)) {
 
@@ -282,6 +327,7 @@ class Play extends Phaser.Scene {
 
                 this.player0.anims.play('forward', true).setAccelerationY(-5000).setVelocityY(-gameSettings.playerSpeed);
                 this.background.tilePositionY -= 2;
+                this.bg3.tilePositionY -= 2;
 
             } else {
 
