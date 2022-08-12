@@ -12,7 +12,7 @@ var config = {
             debug: false
         }
     },
-    scene: [Play, GameOver],
+    scene: [Start, Play, GameOver],
     pixelArt: true
 };
 

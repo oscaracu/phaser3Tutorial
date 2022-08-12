@@ -15,6 +15,7 @@ class Play extends Phaser.Scene {
                 this.time.removeAllEvents();
                 this.playerActive = true;
                 this.player0.body.moves = true;
+                this.powerBarScore = 32;
             }
         }
 
@@ -30,7 +31,14 @@ class Play extends Phaser.Scene {
 
     enemyMoves(enemy) {
         enemy.y += Phaser.Math.Between(this.enemyMinSpeed, this.enemyMaxSpeed);
-        if (enemy.y > config.height) {
+        if (enemy.y > config.height && this.enemiesActive && this.playerActive) {
+            this.powerBarScore -= 4;
+            this.powerBarFull.setCrop(0, 0, this.powerBarScore, 16);
+
+            if (this.powerBarScore === 0){
+                this.playerHurt();
+            }
+   
             this.enemyReset(enemy);
         }
     }
@@ -39,6 +47,7 @@ class Play extends Phaser.Scene {
 
         enemy.y = Phaser.Math.Between(0, -200);
         enemy.x = Phaser.Math.Between(20, config.width - 20);
+        this.enemiesActive = true;
 
     }
 
@@ -59,6 +68,7 @@ class Play extends Phaser.Scene {
 
         if (this.playerLives === 0) {
             this.musicFadeOut();
+            this.gameoverFX.play();
             this.player0.body.checkCollision.none = true;
         }
         
@@ -99,6 +109,20 @@ class Play extends Phaser.Scene {
 
     enemyDies(projectile, enemy){
 
+        this.enemiesActive = false;
+
+        if ( this.score % 2500 === 0 && this.score !== 0){
+            this.time.addEvent({
+                delay: 5000,
+                callback: () => {
+                    
+                    this.enemyMaxSpeed += 0.5;
+                    this.enemyMinSpeed += 0.5;
+    
+                }
+            });
+        }
+
         projectile.destroy();
         this.score += 100;
         this.player1Score.text = this.score;
@@ -124,6 +148,7 @@ class Play extends Phaser.Scene {
     };
 
     preload() {
+
         this.load.spritesheet("background", "Space_BG.png", { frameWidth: 64, frameHeight: 64 });
         this.load.spritesheet("player", "Player/playerShip.png", { frameWidth: 16, frameHeight: 23 });
         this.load.image("beam", "Projectiles/Player_beam.png");
@@ -136,6 +161,9 @@ class Play extends Phaser.Scene {
         this.load.audio("laserFX", "LASRGun_Classic Blaster A Fire_03.wav");
         this.load.audio("explosionFX", "EXPLDsgn_Explosion Impact_14.wav");
         this.load.image("bg3", "Space_Background_4.png");
+        this.load.audio("gameoverFX", "scream.wav");
+        this.load.spritesheet("powerBar", "UIobjects/powerBars.png", { frameWidth: 32, frameHeight: 16 });
+
     }
 
     create() {
@@ -209,6 +237,7 @@ class Play extends Phaser.Scene {
             yoyo: true
         });
 
+        this.powerBarScore = 32;
         this.enemyMinSpeed = 1;
         this.enemyMaxSpeed = 3;
         this.score = 0;
@@ -218,8 +247,10 @@ class Play extends Phaser.Scene {
         this.bonbonStartPos = Phaser.Math.Between(20, config.width - 20);
         this.lipsStartPos = Phaser.Math.Between(20, config.width - 20);
         this.playerActive = true;
+        this.enemiesActive = true;
 
         this.bgMusic = this.sound.add('bgMusic');
+        this.gameoverFX = this.sound.add("gameoverFX");
 
         var bgMusicConfig = {
             mute: false,
@@ -259,6 +290,8 @@ class Play extends Phaser.Scene {
         this.player1Score = this.add.text(10, 26, '0', { fontFamily: '"Press Start 2P"', fontSize: 12 });
         this.livesUI = this.add.group({ key: 'lives', frame: 0, repeat: this.playerLives-1, setXY: { x: 15, y: 55, stepX: 25 } }).scaleXY(1);
         this.livesIcons = this.livesUI.getChildren();
+        this.powerBarEmpty = this.add.sprite(310, 600, "powerBar", 1).setScale(2.5);
+        this.powerBarFull = this.add.sprite(310, 600, "powerBar", 0).setScale(2.5).setCrop(0, 0, 32, 16);
 
         this.physics.add.overlap(this.player0, this.enemies, this.playerHurt, null, this);
         this.physics.add.overlap(this.projectiles, this.enemies, this.enemyDies, null, this);
@@ -274,7 +307,7 @@ class Play extends Phaser.Scene {
         this.background.setFrame(this.bgSprite.frame.name);
 
         this.background.tilePositionY -= 1;
-        this.bg3.tilePositionY -= 1;
+        this.bg3.tilePositionY -= 0.5;
 
         this.enemyMoves(this.alan0);
         this.enemyMoves(this.bonbon0);
@@ -357,6 +390,7 @@ class Play extends Phaser.Scene {
             beam.update();
 
         }
+
 
     }
 
