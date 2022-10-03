@@ -117,6 +117,20 @@ class Start extends Phaser.Scene {
       Phaser.Input.Keyboard.KeyCodes.ENTER
     );
 
+    this.useKeys1 = this.add.text(
+      config.width / 2 - 94,
+      config.height - 200,
+      "Use ←↑→ to move",
+      { fontFamily: '"Press Start 2P"', fontSize: 12, color: "yellow" }
+    );
+
+    this.useKeys2 = this.add.text(
+      config.width / 2 - 123,
+      config.height - 180,
+      "Use SPACEBAR to shot",
+      { fontFamily: '"Press Start 2P"', fontSize: 12, color: "yellow" }
+    );
+
     this.tweens.add({
       targets: playLabel,
       alpha: 0,
