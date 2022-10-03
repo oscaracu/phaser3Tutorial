@@ -1,22 +1,23 @@
+var hiScore;
+
 var gameSettings = {
-    playerSpeed: 100,
+  playerSpeed: 100,
 };
 
 var config = {
-    type: Phaser.AUTO,
-    width: 360,
-    height: 640,
-    physics: {
-        default: 'arcade',
-        arcade: {
-            debug: false
-        }
+  type: Phaser.AUTO,
+  width: 540,
+  height: 720,
+  physics: {
+    default: "arcade",
+    arcade: {
+      debug: false,
     },
-    scene: [Start, Play, GameOver],
-    pixelArt: true
+  },
+  scene: [Start, Play, GameOver],
+  pixelArt: true,
 };
 
-
 window.onload = function () {
-    var game = new Phaser.Game(config);
+  var game = new Phaser.Game(config);
 };

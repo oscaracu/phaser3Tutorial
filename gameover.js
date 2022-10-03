@@ -15,7 +15,7 @@ class GameOver extends Phaser.Scene {
             callback: () => {
 
                 this.scene.stop('playGame');                    
-                this.scene.switch('start');
+                this.scene.start('start');
 
             }
         });
