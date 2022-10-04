@@ -4,17 +4,17 @@ class Start extends Phaser.Scene {
   }
 
   preload() {
-    this.load.spritesheet("background", "Space_BG.png", {
+    this.load.spritesheet("background", "assets/Space_BG.png", {
       frameWidth: 64,
       frameHeight: 64,
     });
-    this.load.image("bg3", "Space_Background_4.png");
-    this.load.audio("menu", "menu.wav");
-    this.load.spritesheet("spaceShip", "Player/playerShip.png", {
+    this.load.image("bg3", "assets/Space_Background_4.png");
+    this.load.audio("menu", "assets/menu.wav");
+    this.load.spritesheet("spaceShip", "assets/Player/playerShip.png", {
       frameWidth: 16,
       frameHeight: 23,
     });
-    this.load.audio("startFX", "start-level.wav");
+    this.load.audio("startFX", "assets/start-level.wav");
   }
 
   create() {

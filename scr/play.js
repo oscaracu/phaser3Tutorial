@@ -140,38 +140,38 @@ class Play extends Phaser.Scene {
   }
 
   preload() {
-    this.load.spritesheet("background", "Space_BG.png", {
+    this.load.spritesheet("background", "assets/Space_BG.png", {
       frameWidth: 64,
       frameHeight: 64,
     });
-    this.load.spritesheet("player", "Player/playerShip.png", {
+    this.load.spritesheet("player", "assets/Player/playerShip.png", {
       frameWidth: 16,
       frameHeight: 23,
     });
-    this.load.image("beam", "Projectiles/Player_beam.png");
-    this.load.spritesheet("alan", "Enemies/Alan.png", {
+    this.load.image("beam", "assets/Projectiles/Player_beam.png");
+    this.load.spritesheet("alan", "assets/Enemies/Alan.png", {
       frameWidth: 16,
       frameHeight: 16,
     });
-    this.load.spritesheet("bonbon", "Enemies/Bon_Bon.png", {
+    this.load.spritesheet("bonbon", "assets/Enemies/Bon_Bon.png", {
       frameWidth: 16,
       frameHeight: 16,
     });
-    this.load.spritesheet("lips", "Enemies/Lips.png", {
+    this.load.spritesheet("lips", "assets/Enemies/Lips.png", {
       frameWidth: 16,
       frameHeight: 16,
     });
-    this.load.spritesheet("explosion", "Effects/Explosion.png", {
+    this.load.spritesheet("explosion", "assets/Effects/Explosion.png", {
       frameWidth: 16,
       frameHeight: 16,
     });
-    this.load.image("lives", "UIobjects/Player_life_icon.png");
-    this.load.audio("bgMusic", "Race_to_Mars.mp3");
-    this.load.audio("laserFX", "LASRGun_Classic Blaster A Fire_03.wav");
-    this.load.audio("explosionFX", "EXPLDsgn_Explosion Impact_14.wav");
-    this.load.image("bg3", "Space_Background_4.png");
-    this.load.audio("gameoverFX", "scream.wav");
-    this.load.spritesheet("powerBar", "UIobjects/powerBars.png", {
+    this.load.image("lives", "assets/UIobjects/Player_life_icon.png");
+    this.load.audio("bgMusic", "assets/Race_to_Mars.mp3");
+    this.load.audio("laserFX", "assets/LASRGun_Classic Blaster A Fire_03.wav");
+    this.load.audio("explosionFX", "assets/EXPLDsgn_Explosion Impact_14.wav");
+    this.load.image("bg3", "assets/Space_Background_4.png");
+    this.load.audio("gameoverFX", "assets/scream.wav");
+    this.load.spritesheet("powerBar", "assets/UIobjects/powerBars.png", {
       frameWidth: 32,
       frameHeight: 16,
     });
