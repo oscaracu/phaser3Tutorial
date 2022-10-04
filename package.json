@@ -1,0 +1,25 @@
+{
+  "name": "space-hero-arcade-retro-game",
+  "version": "1.0.0",
+  "description": "Arcade-type game from the 80s developed during the Video Game Development course",
+  "main": "index.html",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/oscaracu/phaser3Tutorial.git"
+  },
+  "keywords": [
+    "Phaser",
+    "games",
+    "javascript",
+    "html"
+  ],
+  "author": "Oscar del Angel Cu Reyes",
+  "license": "ISC",
+  "bugs": {
+    "url": "https://github.com/oscaracu/phaser3Tutorial/issues"
+  },
+  "homepage": "https://github.com/oscaracu/phaser3Tutorial#readme"
+}
