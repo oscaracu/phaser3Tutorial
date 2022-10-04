@@ -2,10 +2,9 @@
   "name": "space-hero-arcade-retro-game",
   "version": "1.0.0",
   "description": "Arcade-type game from the 80s developed during the Video Game Development course",
-  "main": "index.html",
+  "private": "true",
   "scripts": {
     "test": "echo \"Error: no test specified\" && exit 1",
-    "build": "webpack --config prod.js",
     "start": "webpack-dev-server --config base.js --open"
   },
   "repository": {
@@ -34,6 +33,7 @@
     "copy-webpack-plugin": "^11.0.0",
     "file-loader": "^6.2.0",
     "html-webpack-plugin": "^5.5.0",
+    "lodash": "^4.17.21",
     "path": "^0.12.7",
     "terser-webpack-plugin": "^5.3.6",
     "webpack-dev-server": "^4.11.1",
